@@ -146,34 +146,46 @@ fun HomeScreen(
             Column(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 40.dp, horizontal = 24.dp),
             ) {
-                LazyColumn(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(24.dp)
-                ) {
-                    itemsIndexed(history.take(5)) { index, record ->
-                        val prev = history.getOrNull(index + 1)
-                        val diff = prev?.let { record.weight - it.weight }
-
-                        WeightRecord(
-                            record = record,
-                            diff = diff ?: 0F,
-                            gain = (diff ?: 0F) > 0,
-                            onDelete = { viewModel.deleteWeight(record) }
-                        )
-                    }
+                if (history.isEmpty()) {
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = "No records yet",
+                        fontFamily = fontFamily,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium,
+                        textAlign = TextAlign.Center
+                    )
                 }
-                Spacer(modifier = Modifier.height(40.dp))
-                Text(
-                    modifier = Modifier.fillMaxWidth().clickable {
-                        navController.navigate(Screen.History.route)
-                    },
-                    text = "View History",
-                    textAlign = TextAlign.Center,
-                    fontFamily = fontFamily,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    textDecoration = TextDecoration.Underline,
-                )
+                else {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(24.dp)
+                    ) {
+                        itemsIndexed(history.take(5)) { index, record ->
+                            val prev = history.getOrNull(index + 1)
+                            val diff = prev?.let { record.weight - it.weight }
+
+                            WeightRecord(
+                                record = record,
+                                diff = diff ?: 0F,
+                                gain = (diff ?: 0F) > 0,
+                                onDelete = { viewModel.deleteWeight(record) }
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(40.dp))
+                    Text(
+                        modifier = Modifier.fillMaxWidth().clickable {
+                            navController.navigate(Screen.History.route)
+                        },
+                        text = "View History",
+                        textAlign = TextAlign.Center,
+                        fontFamily = fontFamily,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        textDecoration = TextDecoration.Underline,
+                    )
+                }
             }
         }
 

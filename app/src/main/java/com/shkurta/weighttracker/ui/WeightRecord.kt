@@ -101,6 +101,7 @@ fun WeightRecord(
                     fontWeight = FontWeight.SemiBold,
                     textAlign = TextAlign.Center
                 )
+                Spacer(modifier = Modifier.height(6.dp))
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = DateFormat.getDateTimeInstance().format(Date(record.timestamp)),
