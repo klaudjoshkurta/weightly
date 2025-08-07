@@ -1,4 +1,4 @@
-package com.shkurta.weighttracker.ui
+package com.shkurta.weighttracker.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -26,10 +26,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.shkurta.weighttracker.R
 import com.shkurta.weighttracker.data.local.entity.WeightEntry
 import com.shkurta.weighttracker.ui.theme.fontFamily
 import kotlinx.coroutines.launch
@@ -50,9 +52,11 @@ fun WeightRecord(
     var showBottomSheet by remember { mutableStateOf(false) }
 
     Row(
-        modifier = modifier.fillMaxWidth().clickable {
-            showBottomSheet = true
-        },
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable {
+                showBottomSheet = true
+            },
         verticalAlignment = Alignment.Bottom,
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
@@ -72,7 +76,12 @@ fun WeightRecord(
             )
         }
         Box(
-            modifier = Modifier.background(color = MaterialTheme.colorScheme.onBackground.copy(0.08F), shape = RoundedCornerShape(8.dp)).padding(horizontal = 6.dp, vertical = 2.dp),
+            modifier = Modifier
+                .background(
+                    color = MaterialTheme.colorScheme.onBackground.copy(0.08F),
+                    shape = RoundedCornerShape(8.dp)
+                )
+                .padding(horizontal = 6.dp, vertical = 2.dp),
             contentAlignment = Alignment.Center
         ) {
             Text(
@@ -90,7 +99,9 @@ fun WeightRecord(
             containerColor = MaterialTheme.colorScheme.background,
         ) {
             Column(
-                modifier = Modifier.fillMaxWidth().padding(vertical = 40.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 40.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
@@ -122,7 +133,7 @@ fun WeightRecord(
                     }
                 ) {
                     Text(
-                        text = "Delete record",
+                        text = stringResource(R.string.delete_record),
                         fontFamily = fontFamily,
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.error

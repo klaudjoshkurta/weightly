@@ -20,6 +20,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -27,7 +28,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.shkurta.weighttracker.R
-import com.shkurta.weighttracker.ui.WeightRecord
+import com.shkurta.weighttracker.ui.components.WeightRecord
 import com.shkurta.weighttracker.ui.theme.fontFamily
 import com.shkurta.weighttracker.ui.viewModel.WeightViewModel
 
@@ -45,7 +46,7 @@ fun HistoryScreen(
                 modifier = Modifier.padding(horizontal = 18.dp),
                 title = {
                     Text(
-                        text = "History",
+                        text = stringResource(R.string.history),
                         fontFamily = fontFamily,
                         fontSize = 20.sp,
                         textAlign = TextAlign.Center,
@@ -55,9 +56,11 @@ fun HistoryScreen(
                 },
                 navigationIcon = {
                     Icon(
-                        modifier = Modifier.size(24.dp).clickable {
-                            navController.popBackStack()
-                        },
+                        modifier = Modifier
+                            .size(24.dp)
+                            .clickable {
+                                navController.popBackStack()
+                            },
                         painter = painterResource(id = R.drawable.ic_back),
                         contentDescription = null
                     )
@@ -70,10 +73,14 @@ fun HistoryScreen(
         }
     ) { innerPadding ->
         Column(
-            modifier = Modifier.fillMaxSize().padding(innerPadding)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
         ) {
             LazyColumn(
-                modifier = Modifier.fillMaxSize().padding(24.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(24.dp),
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
                 itemsIndexed(list) { index, record ->

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Παρακολούθηση Βάρους</string>
+    <string name="weight_tracker">Παρακολούθηση Βάρους</string>
+    <string name="no_records_yet">Δεν υπάρχουν εγγραφές ακόμη</string>
+    <string name="view_history">Προβολή Ιστορικού</string>
+    <string name="history">Ιστορικό</string>
+    <string name="delete_record">Διαγραφή εγγραφής</string>
+</resources>

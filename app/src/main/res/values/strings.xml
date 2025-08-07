@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Weight Tracker</string>
+    <string name="weight_tracker">Weight Tracker</string>
+    <string name="kg" translatable="false">kg</string>
+    <string name="no_records_yet">No records yet</string>
+    <string name="view_history">View History</string>
+    <string name="weight_input_hint" translatable="false">0kg</string>
+    <string name="history">History</string>
+    <string name="delete_record">Delete record</string>
 </resources>

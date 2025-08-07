@@ -40,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -51,7 +52,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.shkurta.weighttracker.R
-import com.shkurta.weighttracker.ui.WeightRecord
+import com.shkurta.weighttracker.ui.components.WeightRecord
 import com.shkurta.weighttracker.ui.navigation.Screen
 import com.shkurta.weighttracker.ui.theme.fontFamily
 import com.shkurta.weighttracker.ui.viewModel.WeightViewModel
@@ -78,7 +79,7 @@ fun HomeScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "Weight Tracker",
+                        text = stringResource(R.string.weight_tracker),
                         fontFamily = fontFamily,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.SemiBold,
@@ -114,11 +115,15 @@ fun HomeScreen(
         floatingActionButtonPosition = FabPosition.Center
     ) { innerPadding ->
         Column(
-            modifier = Modifier.fillMaxSize().padding(innerPadding),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding),
         ) {
             /** Latest weight in */
             Column (
-                modifier = Modifier.fillMaxWidth().padding(vertical = 40.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 40.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
@@ -132,7 +137,7 @@ fun HomeScreen(
                 )
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = "kg",
+                    text = stringResource(R.string.kg),
                     textAlign = TextAlign.Center,
                     fontFamily = fontFamily,
                     fontSize = 20.sp,
@@ -144,12 +149,14 @@ fun HomeScreen(
 
             /** Log Snapshot */
             Column(
-                modifier = Modifier.fillMaxWidth().padding(vertical = 40.dp, horizontal = 24.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 40.dp, horizontal = 24.dp),
             ) {
                 if (history.isEmpty()) {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = "No records yet",
+                        text = stringResource(R.string.no_records_yet),
                         fontFamily = fontFamily,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Medium,
@@ -175,10 +182,12 @@ fun HomeScreen(
                     }
                     Spacer(modifier = Modifier.height(40.dp))
                     Text(
-                        modifier = Modifier.fillMaxWidth().clickable {
-                            navController.navigate(Screen.History.route)
-                        },
-                        text = "View History",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                navController.navigate(Screen.History.route)
+                            },
+                        text = stringResource(R.string.view_history),
                         textAlign = TextAlign.Center,
                         fontFamily = fontFamily,
                         fontSize = 16.sp,
@@ -201,11 +210,16 @@ fun HomeScreen(
                 containerColor = MaterialTheme.colorScheme.background,
             ) {
                 Box(
-                    modifier = Modifier.fillMaxWidth().height(200.dp).padding(horizontal = 24.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
+                        .padding(horizontal = 24.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     BasicTextField(
-                        modifier = Modifier.fillMaxWidth().focusRequester(focusRequester),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .focusRequester(focusRequester),
                         value = weightInput,
                         onValueChange = { weightInput = it },
                         textStyle = TextStyle(
@@ -217,7 +231,7 @@ fun HomeScreen(
                         decorationBox = { innerTextField ->
                             if (weightInput.isEmpty()) {
                                 Text(
-                                    text = "0kg",
+                                    text = stringResource(R.string.weight_input_hint),
                                     fontFamily = fontFamily,
                                     fontSize = 32.sp,
                                     fontWeight = FontWeight.SemiBold,
