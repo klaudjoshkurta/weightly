@@ -2,6 +2,7 @@ package com.shkurta.weighttracker.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +12,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -26,6 +29,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -51,10 +56,17 @@ fun WeightRecord(
     val sheetState = rememberModalBottomSheetState()
     var showBottomSheet by remember { mutableStateOf(false) }
 
+    val interactionSource = remember { MutableInteractionSource() }
+    val haptic = LocalHapticFeedback.current
+
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clickable {
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null
+            ) {
+                haptic.performHapticFeedback(HapticFeedbackType.VirtualKey)
                 showBottomSheet = true
             },
         verticalAlignment = Alignment.Bottom,
@@ -122,15 +134,20 @@ fun WeightRecord(
                 Spacer(modifier = Modifier.height(40.dp))
                 HorizontalDivider(color = MaterialTheme.colorScheme.onBackground.copy(0.10F))
                 Spacer(modifier = Modifier.height(40.dp))
-                TextButton(
+                Button(
+                    interactionSource = null,
                     onClick = {
+                        haptic.performHapticFeedback(HapticFeedbackType.VirtualKey)
                         scope.launch { sheetState.hide() }.invokeOnCompletion {
                             if (!sheetState.isVisible) {
                                 onDelete()
                                 showBottomSheet = false
                             }
                         }
-                    }
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.background,
+                    )
                 ) {
                     Text(
                         text = stringResource(R.string.delete_record),

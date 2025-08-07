@@ -1,6 +1,7 @@
 package com.shkurta.weighttracker.ui.screen
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,6 +40,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -73,6 +76,9 @@ fun HomeScreen(
     val history by viewModel.history.collectAsState(initial = emptyList())
     val latest = history.firstOrNull()
     val displayWeight = latest?.weight ?: "0.0"
+
+    val interactionSource = remember { MutableInteractionSource() }
+    val haptic = LocalHapticFeedback.current
 
     Scaffold(
         topBar = {
@@ -184,7 +190,11 @@ fun HomeScreen(
                     Text(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable {
+                            .clickable(
+                                interactionSource = interactionSource,
+                                indication = null
+                            ) {
+                                haptic.performHapticFeedback(HapticFeedbackType.VirtualKey)
                                 navController.navigate(Screen.History.route)
                             },
                         text = stringResource(R.string.view_history),
@@ -192,7 +202,6 @@ fun HomeScreen(
                         fontFamily = fontFamily,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold,
-                        textDecoration = TextDecoration.Underline,
                     )
                 }
             }
