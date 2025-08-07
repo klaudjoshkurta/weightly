@@ -12,12 +12,20 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
+import androidx.compose.material3.FloatingActionButtonElevation
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
@@ -42,15 +50,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.shkurta.weighttracker.R
+import com.shkurta.weighttracker.ui.WeightRecord
 import com.shkurta.weighttracker.ui.navigation.Screen
 import com.shkurta.weighttracker.ui.theme.fontFamily
 import com.shkurta.weighttracker.ui.viewModel.WeightViewModel
 import kotlinx.coroutines.launch
+import java.text.DateFormat
+import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -66,93 +78,120 @@ fun HomeScreen(
 
     val history by viewModel.history.collectAsState(initial = emptyList())
     val latest = history.firstOrNull()
+    val displayWeight = latest?.weight ?: 0.0F
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        modifier = Modifier.fillMaxWidth(),
                         text = "Weight Tracker",
                         fontFamily = fontFamily,
-                        fontSize = 16.sp,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.SemiBold,
                         textAlign = TextAlign.Center
                     )
                 },
+//                actions = {
+//                    IconButton(
+//                        onClick = { navController.navigate(Screen.Settings.route) }
+//                    ) {
+//                        Icon(
+//                            modifier = Modifier.size(28.dp),
+//                            painter = painterResource(id = R.drawable.ic_settings),
+//                            contentDescription = null
+//                        )
+//                    }
+//                },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.background,
                     titleContentColor = MaterialTheme.colorScheme.onBackground
                 )
             )
-        }
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    showInputSheet = true
+                },
+                containerColor = MaterialTheme.colorScheme.background,
+                contentColor = MaterialTheme.colorScheme.onBackground,
+                elevation = FloatingActionButtonDefaults.elevation(
+                    defaultElevation = 0.dp,
+                    pressedElevation = 0.dp,
+                    hoveredElevation = 0.dp,
+                    focusedElevation = 0.dp
+                ),
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_plus),
+                    contentDescription = null
+                )
+            }
+        },
+        floatingActionButtonPosition = FabPosition.Center
     ) { innerPadding ->
         Column(
             modifier = Modifier.fillMaxSize().padding(innerPadding),
         ) {
-            Box(
-                modifier = Modifier.weight(1F),
-                contentAlignment = Alignment.Center
+            /** Latest weight in */
+            Column (
+                modifier = Modifier.fillMaxWidth().padding(vertical = 40.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                Column (
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    latest?.let {
-                        Text(
-                            modifier = Modifier.fillMaxWidth(),
-                            text = "${it.weight}",
-                            textAlign = TextAlign.Center,
-                            fontFamily = fontFamily,
-                            fontSize = 48.sp,
-                            fontWeight = FontWeight.SemiBold
-                        )
-                    }
+                latest?.let {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = "kg",
+                        text = "$displayWeight",
                         textAlign = TextAlign.Center,
                         fontFamily = fontFamily,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Medium
+                        fontSize = 48.sp,
+                        fontWeight = FontWeight.SemiBold
                     )
                 }
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "kg",
+                    textAlign = TextAlign.Center,
+                    fontFamily = fontFamily,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Medium
+                )
             }
 
-            /** Actions */
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(vertical = 40.dp),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
+            HorizontalDivider(color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.10F))
+
+            /** Log Snapshot */
+            Column(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 40.dp, horizontal = 24.dp),
             ) {
-                Icon(
-                    modifier = Modifier
-                        .size(28.dp)
-                        .clickable {
-                            navController.navigate(Screen.History.route)
-                        },
-                    painter = painterResource(id = R.drawable.ic_history),
-                    contentDescription = null,
-                )
-                Spacer(modifier = Modifier.width(60.dp))
-                Icon(
-                    modifier = Modifier
-                        .size(28.dp)
-                        .clickable {
-                            showInputSheet = true
-                        },
-                    painter = painterResource(id = R.drawable.ic_new),
-                    contentDescription = null,
-                )
-                Spacer(modifier = Modifier.width(60.dp))
-                Icon(
-                    modifier = Modifier
-                        .size(28.dp)
-                        .clickable {
-                            navController.navigate(Screen.Settings.route)
-                        },
-                    painter = painterResource(id = R.drawable.ic_settings),
-                    contentDescription = null,
+                LazyColumn(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(24.dp)
+                ) {
+                    itemsIndexed(history.take(5)) { index, record ->
+                        val prev = history.getOrNull(index + 1)
+                        val diff = prev?.let { record.weight - it.weight }
+
+                        WeightRecord(
+                            record = record,
+                            diff = diff ?: 0F,
+                            gain = (diff ?: 0F) > 0
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(40.dp))
+                Text(
+                    modifier = Modifier.fillMaxWidth().clickable {
+                        navController.navigate(Screen.History.route)
+                    },
+                    text = "View History",
+                    textAlign = TextAlign.Center,
+                    fontFamily = fontFamily,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    textDecoration = TextDecoration.Underline,
                 )
             }
         }
