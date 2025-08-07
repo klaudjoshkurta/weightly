@@ -22,4 +22,8 @@ class WeightViewModel @Inject constructor(
     fun addWeight(value: Float) {
         viewModelScope.launch { repo.addWeight(value) }
     }
+
+    fun deleteWeight(entry: WeightEntry) {
+        viewModelScope.launch { repo.deleteWeight(entry) }
+    }
 }

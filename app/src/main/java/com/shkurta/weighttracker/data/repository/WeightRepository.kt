@@ -8,6 +8,7 @@ import javax.inject.Inject
 interface WeightRepository {
     fun weightHistory(): Flow<List<WeightEntry>>
     suspend fun addWeight(value: Float)
+    suspend fun deleteWeight(entry: WeightEntry)
 }
 
 class WeightRepositoryImpl @Inject constructor(
@@ -16,5 +17,8 @@ class WeightRepositoryImpl @Inject constructor(
     override fun weightHistory(): Flow<List<WeightEntry>> = weightDao.getAllEntries()
     override suspend fun addWeight(value: Float) {
         weightDao.insertEntry(WeightEntry(weight = value))
+    }
+    override suspend fun deleteWeight(entry: WeightEntry) {
+        weightDao.deleteEntry(entry)
     }
 }

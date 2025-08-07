@@ -83,7 +83,8 @@ fun HistoryScreen(
                     WeightRecord(
                         record = record,
                         diff = diff ?: 0F,
-                        gain = (diff ?: 0F) > 0
+                        gain = (diff ?: 0F) > 0,
+                        onDelete = { viewModel.deleteWeight(record) }
                     )
                 }
             }

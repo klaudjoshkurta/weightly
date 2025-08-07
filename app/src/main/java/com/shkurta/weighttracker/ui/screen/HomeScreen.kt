@@ -4,14 +4,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.BasicTextField
@@ -22,10 +19,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
-import androidx.compose.material3.FloatingActionButtonElevation
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
@@ -61,8 +56,6 @@ import com.shkurta.weighttracker.ui.navigation.Screen
 import com.shkurta.weighttracker.ui.theme.fontFamily
 import com.shkurta.weighttracker.ui.viewModel.WeightViewModel
 import kotlinx.coroutines.launch
-import java.text.DateFormat
-import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -78,7 +71,7 @@ fun HomeScreen(
 
     val history by viewModel.history.collectAsState(initial = emptyList())
     val latest = history.firstOrNull()
-    val displayWeight = latest?.weight ?: 0.0F
+    val displayWeight = latest?.weight ?: "0.0"
 
     Scaffold(
         topBar = {
@@ -87,22 +80,11 @@ fun HomeScreen(
                     Text(
                         text = "Weight Tracker",
                         fontFamily = fontFamily,
-                        fontSize = 20.sp,
+                        fontSize = 18.sp,
                         fontWeight = FontWeight.SemiBold,
                         textAlign = TextAlign.Center
                     )
                 },
-//                actions = {
-//                    IconButton(
-//                        onClick = { navController.navigate(Screen.Settings.route) }
-//                    ) {
-//                        Icon(
-//                            modifier = Modifier.size(28.dp),
-//                            painter = painterResource(id = R.drawable.ic_settings),
-//                            contentDescription = null
-//                        )
-//                    }
-//                },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.background,
                     titleContentColor = MaterialTheme.colorScheme.onBackground
@@ -140,16 +122,14 @@ fun HomeScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                latest?.let {
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = "$displayWeight",
-                        textAlign = TextAlign.Center,
-                        fontFamily = fontFamily,
-                        fontSize = 48.sp,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                }
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = "$displayWeight",
+                    textAlign = TextAlign.Center,
+                    fontFamily = fontFamily,
+                    fontSize = 48.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = "kg",
@@ -177,7 +157,8 @@ fun HomeScreen(
                         WeightRecord(
                             record = record,
                             diff = diff ?: 0F,
-                            gain = (diff ?: 0F) > 0
+                            gain = (diff ?: 0F) > 0,
+                            onDelete = { viewModel.deleteWeight(record) }
                         )
                     }
                 }
