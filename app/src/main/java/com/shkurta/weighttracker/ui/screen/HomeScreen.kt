@@ -174,7 +174,7 @@ fun HomeScreen(
                         modifier = Modifier.fillMaxWidth(),
                         verticalArrangement = Arrangement.spacedBy(24.dp)
                     ) {
-                        itemsIndexed(history.take(5)) { index, record ->
+                        itemsIndexed(history.take(4)) { index, record ->
                             val prev = history.getOrNull(index + 1)
                             val diff = prev?.let { record.weight - it.weight }
 

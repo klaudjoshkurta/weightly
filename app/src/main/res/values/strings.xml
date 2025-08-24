@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Weight Tracker</string>
+    <string name="app_name">Weightly</string>
     <string name="weight_tracker">Weight Tracker</string>
     <string name="kg" translatable="false">kg</string>
     <string name="no_records_yet">No records yet</string>

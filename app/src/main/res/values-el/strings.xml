@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Παρακολούθηση Βάρους</string>
+    <string name="app_name">Weightly</string>
     <string name="weight_tracker">Παρακολούθηση Βάρους</string>
     <string name="no_records_yet">Δεν υπάρχουν εγγραφές ακόμη</string>
     <string name="view_history">Προβολή Ιστορικού</string>
