@@ -72,21 +72,12 @@ fun WeightRecord(
         verticalAlignment = Alignment.Bottom,
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Column(
-            modifier = Modifier.weight(1F),
-            verticalArrangement = Arrangement.spacedBy(6.dp)
-        ) {
-            Text(
-                text = "${record.weight}kg",
-                fontFamily = fontFamily,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.SemiBold
-            )
-            Text(
-                text = DateFormat.getDateTimeInstance().format(Date(record.timestamp)),
-                fontFamily = fontFamily
-            )
-        }
+        Text(
+            text = "${record.weight}kg",
+            fontFamily = fontFamily,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.SemiBold
+        )
         Box(
             modifier = Modifier
                 .background(
@@ -102,6 +93,11 @@ fun WeightRecord(
                 fontWeight = FontWeight.Medium
             )
         }
+        Spacer(modifier = Modifier.weight(1F))
+        Text(
+            text = DateFormat.getDateTimeInstance().format(Date(record.timestamp)),
+            fontFamily = fontFamily
+        )
     }
 
     if (showBottomSheet) {

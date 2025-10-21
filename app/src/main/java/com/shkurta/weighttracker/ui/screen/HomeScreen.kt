@@ -1,27 +1,30 @@
 package com.shkurta.weighttracker.ui.screen
 
+import android.widget.Space
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FabPosition
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.FloatingActionButtonDefaults
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
@@ -49,7 +52,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -83,42 +85,13 @@ fun HomeScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(R.string.weight_tracker),
-                        fontFamily = fontFamily,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        textAlign = TextAlign.Center
-                    )
-                },
+                title = {},
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.background,
                     titleContentColor = MaterialTheme.colorScheme.onBackground
                 )
             )
         },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    showInputSheet = true
-                },
-                containerColor = MaterialTheme.colorScheme.background,
-                contentColor = MaterialTheme.colorScheme.onBackground,
-                elevation = FloatingActionButtonDefaults.elevation(
-                    defaultElevation = 0.dp,
-                    pressedElevation = 0.dp,
-                    hoveredElevation = 0.dp,
-                    focusedElevation = 0.dp
-                ),
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_plus),
-                    contentDescription = null
-                )
-            }
-        },
-        floatingActionButtonPosition = FabPosition.Center
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -135,29 +108,21 @@ fun HomeScreen(
             ) {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = "$displayWeight",
+                    text = "$displayWeight${stringResource(R.string.kg)}",
                     textAlign = TextAlign.Center,
                     fontFamily = fontFamily,
-                    fontSize = 48.sp,
+                    fontSize = 40.sp,
                     fontWeight = FontWeight.SemiBold
                 )
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(R.string.kg),
-                    textAlign = TextAlign.Center,
-                    fontFamily = fontFamily,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Medium
-                )
             }
-
-            HorizontalDivider(color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.10F))
 
             /** Log Snapshot */
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 40.dp, horizontal = 24.dp),
+                    .padding(vertical = 40.dp, horizontal = 24.dp)
+                    .weight(1F),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 if (history.isEmpty()) {
                     Text(
@@ -174,7 +139,7 @@ fun HomeScreen(
                         modifier = Modifier.fillMaxWidth(),
                         verticalArrangement = Arrangement.spacedBy(24.dp)
                     ) {
-                        itemsIndexed(history.take(4)) { index, record ->
+                        itemsIndexed(history.take(3)) { index, record ->
                             val prev = history.getOrNull(index + 1)
                             val diff = prev?.let { record.weight - it.weight }
 
@@ -205,6 +170,13 @@ fun HomeScreen(
                     )
                 }
             }
+
+            /** Bottom Actions */
+            BottomActions(
+                onAddNew = { showInputSheet = true },
+                onHistory = {},
+                onMenu = {}
+            )
         }
 
         if (showInputSheet) {
@@ -271,6 +243,59 @@ fun HomeScreen(
                         )
                     )
                 }
+            }
+        }
+    }
+}
+
+@Composable
+fun BottomActions(
+    modifier: Modifier = Modifier,
+    onAddNew: () -> Unit,
+    onHistory: () -> Unit,
+    onMenu: () -> Unit
+) {
+    Column(
+        modifier = modifier.fillMaxWidth().padding(vertical = 38.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            IconButton(
+                onClick = onHistory
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_chart),
+                    contentDescription = null,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+            Spacer(modifier = Modifier.width(38.dp))
+            Button(
+                onClick = onAddNew,
+                modifier = Modifier.width(120.dp).height(64.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.secondary,
+                    contentColor = MaterialTheme.colorScheme.onSecondary
+                )
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_plus),
+                    contentDescription = null,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+            Spacer(modifier = Modifier.width(38.dp))
+            IconButton(
+                onClick = onMenu
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_menu),
+                    contentDescription = null,
+                    modifier = Modifier.size(24.dp)
+                )
             }
         }
     }
