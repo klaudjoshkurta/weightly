@@ -1,8 +1,5 @@
 package com.shkurta.weighttracker.ui.screen
 
-import android.widget.Space
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -43,8 +40,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -79,9 +74,6 @@ fun HomeScreen(
     val latest = history.firstOrNull()
     val displayWeight = latest?.weight ?: "0.0"
 
-    val interactionSource = remember { MutableInteractionSource() }
-    val haptic = LocalHapticFeedback.current
-
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -102,7 +94,7 @@ fun HomeScreen(
             Column (
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 40.dp),
+                    .padding(vertical = 80.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
@@ -139,6 +131,15 @@ fun HomeScreen(
                         modifier = Modifier.fillMaxWidth(),
                         verticalArrangement = Arrangement.spacedBy(24.dp)
                     ) {
+                        item {
+                            Text(
+                                modifier = Modifier.fillMaxWidth(),
+                                text = "Most recent",
+                                fontFamily = fontFamily,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.SemiBold,
+                            )
+                        }
                         itemsIndexed(history.take(3)) { index, record ->
                             val prev = history.getOrNull(index + 1)
                             val diff = prev?.let { record.weight - it.weight }
