@@ -41,7 +41,13 @@ import com.shkurta.weighttracker.data.local.entity.WeightEntry
 import com.shkurta.weighttracker.ui.theme.fontFamily
 import kotlinx.coroutines.launch
 import java.text.DateFormat
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.Date
+import java.util.Locale
+
+private val monthDayFormatter = DateTimeFormatter.ofPattern("MMM dd", Locale.getDefault())
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -59,6 +65,12 @@ fun WeightRecord(
     val interactionSource = remember { MutableInteractionSource() }
     val haptic = LocalHapticFeedback.current
 
+    val dateText = remember(record.timestamp) {
+        Instant.ofEpochMilli(record.timestamp)
+            .atZone(ZoneId.systemDefault())
+            .format(monthDayFormatter)
+    }
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -69,20 +81,20 @@ fun WeightRecord(
                 haptic.performHapticFeedback(HapticFeedbackType.VirtualKey)
                 showBottomSheet = true
             },
-        verticalAlignment = Alignment.Bottom,
+        verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Text(
             text = "${record.weight}kg",
             fontFamily = fontFamily,
-            fontSize = 20.sp,
-            fontWeight = FontWeight.SemiBold
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold
         )
         Box(
             modifier = Modifier
                 .background(
                     color = MaterialTheme.colorScheme.onBackground.copy(0.08F),
-                    shape = RoundedCornerShape(8.dp)
+                    shape = RoundedCornerShape(200.dp)
                 )
                 .padding(horizontal = 6.dp, vertical = 2.dp),
             contentAlignment = Alignment.Center
@@ -90,13 +102,16 @@ fun WeightRecord(
             Text(
                 text = if (gain) "+${"%.1f".format(diff)}kg" else "${"%.1f".format(diff)}kg",
                 fontFamily = fontFamily,
-                fontWeight = FontWeight.Medium
+                fontSize = 14.sp,
+                fontWeight = FontWeight.SemiBold
             )
         }
         Spacer(modifier = Modifier.weight(1F))
         Text(
-            text = DateFormat.getDateTimeInstance().format(Date(record.timestamp)),
-            fontFamily = fontFamily
+            text = dateText,
+            fontFamily = fontFamily,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Medium
         )
     }
 

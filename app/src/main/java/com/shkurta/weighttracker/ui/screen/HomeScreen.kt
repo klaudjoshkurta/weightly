@@ -151,30 +151,13 @@ fun HomeScreen(
                             )
                         }
                     }
-                    Spacer(modifier = Modifier.height(40.dp))
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable(
-                                interactionSource = interactionSource,
-                                indication = null
-                            ) {
-                                haptic.performHapticFeedback(HapticFeedbackType.VirtualKey)
-                                navController.navigate(Screen.History.route)
-                            },
-                        text = stringResource(R.string.view_history),
-                        textAlign = TextAlign.Center,
-                        fontFamily = fontFamily,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.SemiBold,
-                    )
                 }
             }
 
             /** Bottom Actions */
             BottomActions(
                 onAddNew = { showInputSheet = true },
-                onHistory = {},
+                onHistory = { navController.navigate(Screen.History.route) },
                 onMenu = {}
             )
         }
