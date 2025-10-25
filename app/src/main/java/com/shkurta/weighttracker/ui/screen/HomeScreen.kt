@@ -134,7 +134,7 @@ fun HomeScreen(
                         item {
                             Text(
                                 modifier = Modifier.fillMaxWidth(),
-                                text = "Most recent",
+                                text = stringResource(R.string.most_recent),
                                 fontFamily = fontFamily,
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.SemiBold,
@@ -240,7 +240,9 @@ fun BottomActions(
     onMenu: () -> Unit
 ) {
     Column(
-        modifier = modifier.fillMaxWidth().padding(vertical = 38.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 38.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row(
@@ -259,7 +261,9 @@ fun BottomActions(
             Spacer(modifier = Modifier.width(38.dp))
             Button(
                 onClick = onAddNew,
-                modifier = Modifier.width(120.dp).height(64.dp),
+                modifier = Modifier
+                    .width(120.dp)
+                    .height(64.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.secondary,
                     contentColor = MaterialTheme.colorScheme.onSecondary

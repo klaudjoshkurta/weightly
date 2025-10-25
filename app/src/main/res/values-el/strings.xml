@@ -6,4 +6,5 @@
     <string name="view_history">Προβολή Ιστορικού</string>
     <string name="history">Ιστορικό</string>
     <string name="delete_record">Διαγραφή εγγραφής</string>
+    <string name="most_recent">Most recent</string>
 </resources>

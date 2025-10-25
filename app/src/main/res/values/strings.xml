@@ -7,4 +7,5 @@
     <string name="weight_input_hint" translatable="false">0kg</string>
     <string name="history">History</string>
     <string name="delete_record">Delete record</string>
+    <string name="most_recent">Most recent</string>
 </resources>
