@@ -202,7 +202,13 @@ fun NewRecordScreen(
                         modifier = Modifier
                             .width(120.dp)
                             .height(64.dp),
-                        onClick = {  },
+                        onClick = {
+                            weightInput.toFloatOrNull()?.let {
+                                viewModel.addWeight(it)
+                                weightInput = ""
+                            }
+                            navController.navigateUp()
+                        },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.primary,
                             contentColor = MaterialTheme.colorScheme.onPrimary
