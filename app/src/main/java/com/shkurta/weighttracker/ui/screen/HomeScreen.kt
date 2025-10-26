@@ -1,21 +1,18 @@
 package com.shkurta.weighttracker.ui.screen
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -29,23 +26,17 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -56,7 +47,6 @@ import com.shkurta.weighttracker.ui.components.WeightRecord
 import com.shkurta.weighttracker.ui.navigation.Screen
 import com.shkurta.weighttracker.ui.theme.fontFamily
 import com.shkurta.weighttracker.ui.viewModel.WeightViewModel
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -64,13 +54,19 @@ fun HomeScreen(
     navController: NavHostController,
     viewModel: WeightViewModel = hiltViewModel()
 ) {
-    val scope = rememberCoroutineScope()
-    val inputSheetState = rememberModalBottomSheetState()
-    var showInputSheet by remember { mutableStateOf(false) }
-    var weightInput by remember { mutableStateOf("") }
-    val focusRequester = remember { FocusRequester() }
+    val historySheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
+    )
+    var showHistorySheet by remember { mutableStateOf(false) }
+    /** Screen height in dp so we can compute 90% */
+    val configuration = LocalConfiguration.current
+    val maxHeightDp = remember(configuration) {
+        configuration.screenHeightDp.dp * 0.9f
+    }
 
     val history by viewModel.history.collectAsState(initial = emptyList())
+    val list by viewModel.history.collectAsState()
+
     val latest = history.firstOrNull()
     val displayWeight = latest?.weight ?: "0.0"
 
@@ -158,74 +154,51 @@ fun HomeScreen(
             /** Bottom Actions */
             BottomActions(
                 onAddNew = { navController.navigate(Screen.NewRecord.route) },
-                onHistory = { navController.navigate(Screen.History.route) },
+                onHistory = { showHistorySheet = true },
                 onMenu = {}
             )
         }
 
-        if (showInputSheet) {
-
-            LaunchedEffect(Unit) {
-                focusRequester.requestFocus()
-            }
+        if (showHistorySheet) {
 
             ModalBottomSheet(
-                onDismissRequest = { showInputSheet = false },
-                sheetState = inputSheetState,
+                onDismissRequest = { showHistorySheet = false },
+                sheetState = historySheetState,
                 containerColor = MaterialTheme.colorScheme.background,
             ) {
-                Box(
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(200.dp)
-                        .padding(horizontal = 24.dp),
-                    contentAlignment = Alignment.Center
+                        .heightIn(
+                            max = maxHeightDp
+                        ),
                 ) {
-                    BasicTextField(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .focusRequester(focusRequester),
-                        value = weightInput,
-                        onValueChange = { weightInput = it },
-                        textStyle = TextStyle(
-                            fontFamily = fontFamily,
-                            fontSize = 32.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            textAlign = TextAlign.Center
-                        ),
-                        decorationBox = { innerTextField ->
-                            if (weightInput.isEmpty()) {
-                                Text(
-                                    text = stringResource(R.string.weight_input_hint),
-                                    fontFamily = fontFamily,
-                                    fontSize = 32.sp,
-                                    fontWeight = FontWeight.SemiBold,
-                                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.38F),
-                                    textAlign = TextAlign.Center
-                                )
-                            }
-                            innerTextField()
-                        },
-                        keyboardOptions = KeyboardOptions().copy(
-                            imeAction = ImeAction.Done,
-                            keyboardType = KeyboardType.Number
-                        ),
-                        keyboardActions = KeyboardActions(
-                            onDone = {
-                                if (weightInput.isNotEmpty()) {
-                                    scope.launch { inputSheetState.hide() }.invokeOnCompletion {
-                                        if (!inputSheetState.isVisible) {
-                                            weightInput.toFloatOrNull()?.let {
-                                                viewModel.addWeight(it)
-                                                weightInput = ""
-                                            }
-                                            showInputSheet = false
-                                        }
-                                    }
-                                }
-                            }
-                        )
+                    Text(
+                        text = stringResource(R.string.history),
+                        fontFamily = fontFamily,
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth()
                     )
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(24.dp),
+                        verticalArrangement = Arrangement.spacedBy(24.dp)
+                    ) {
+                        itemsIndexed(list) { index, record ->
+                            val prev = list.getOrNull(index + 1)
+                            val diff = prev?.let { record.weight - it.weight }
+
+                            WeightRecord(
+                                record = record,
+                                diff = diff ?: 0F,
+                                gain = (diff ?: 0F) > 0,
+                                onDelete = { viewModel.deleteWeight(record) }
+                            )
+                        }
+                    }
                 }
             }
         }
