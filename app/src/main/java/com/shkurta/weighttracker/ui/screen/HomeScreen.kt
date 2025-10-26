@@ -157,7 +157,7 @@ fun HomeScreen(
 
             /** Bottom Actions */
             BottomActions(
-                onAddNew = { showInputSheet = true },
+                onAddNew = { navController.navigate(Screen.NewRecord.route) },
                 onHistory = { navController.navigate(Screen.History.route) },
                 onMenu = {}
             )

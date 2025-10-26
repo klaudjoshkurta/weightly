@@ -8,12 +8,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.shkurta.weighttracker.ui.screen.HistoryScreen
 import com.shkurta.weighttracker.ui.screen.HomeScreen
+import com.shkurta.weighttracker.ui.screen.NewRecordScreen
 import com.shkurta.weighttracker.ui.screen.SettingsScreen
 
 sealed class Screen(val route: String) {
     data object Home : Screen("home")
     data object History : Screen("history")
     data object Settings : Screen("settings")
+    data object NewRecord : Screen("new_record")
 }
 
 @Composable
@@ -33,6 +35,9 @@ fun AppNavigation() {
         }
         composable(Screen.Settings.route) {
             SettingsScreen(navController)
+        }
+        composable(Screen.NewRecord.route) {
+            NewRecordScreen(navController)
         }
     }
 }

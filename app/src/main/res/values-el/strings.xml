@@ -7,4 +7,5 @@
     <string name="history">Ιστορικό</string>
     <string name="delete_record">Διαγραφή εγγραφής</string>
     <string name="most_recent">Most recent</string>
+    <string name="new_record">New Record</string>
 </resources>

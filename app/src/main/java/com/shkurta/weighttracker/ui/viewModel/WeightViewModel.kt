@@ -7,6 +7,7 @@ import com.shkurta.weighttracker.data.repository.WeightRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -18,6 +19,13 @@ class WeightViewModel @Inject constructor(
 
     val history: StateFlow<List<WeightEntry>> = repo.weightHistory()
         .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+
+    val currentWeight: StateFlow<Float?> = repo.weightHistory()
+        .map { entries ->
+            entries.firstOrNull()?.weight
+        }
+        .stateIn(viewModelScope, SharingStarted.Lazily, null)
+
 
     fun addWeight(value: Float) {
         viewModelScope.launch { repo.addWeight(value) }
