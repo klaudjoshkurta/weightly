@@ -5,7 +5,6 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.shkurta.weighttracker.ui.AppLanguage
 import com.shkurta.weighttracker.ui.AppTheme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -21,13 +20,6 @@ class SettingsRepository @Inject constructor(
 ) {
     private object Keys {
         val THEME = stringPreferencesKey("theme")
-        val LANGUAGE = stringPreferencesKey("language")
-    }
-
-    /** Expose current language as a Flow<AppLanguage> */
-    val languageFlow: Flow<AppLanguage> = context.settingsDataStore.data.map { prefs: Preferences ->
-        val raw = prefs[Keys.LANGUAGE]
-        AppLanguage.fromStorageKey(raw)
     }
 
     /** Expose current theme as a Flow<AppTheme> */
@@ -37,11 +29,6 @@ class SettingsRepository @Inject constructor(
     }
 
     // Setters
-    suspend fun setLanguage(language: AppLanguage) {
-        context.settingsDataStore.edit { prefs ->
-            prefs[Keys.LANGUAGE] = language.storageKey
-        }
-    }
 
     suspend fun setTheme(theme: AppTheme) {
         context.settingsDataStore.edit { prefs ->

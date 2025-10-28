@@ -23,7 +23,7 @@ class MainActivity : ComponentActivity() {
             /** Grab SettingsViewModel so we can observe the theme */
             val settingsViewModel: SettingsViewModel = hiltViewModel()
 
-            /** Collect current theme choice as State so recomposition happens */
+            /** Collect user selections */
             val appThemeChoice by settingsViewModel.theme.collectAsState()
 
             /** Translate AppTheme -> Boolean for dark/light */
@@ -33,6 +33,7 @@ class MainActivity : ComponentActivity() {
                 AppTheme.AUTO -> isSystemInDarkTheme()
             }
 
+            /** Apply theme to the whole app */
             WeightTrackerTheme(
                 darkTheme = shouldUseDark
             ) {

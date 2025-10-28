@@ -57,6 +57,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     /** Room */
     implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.appcompat)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
     /** Hilt */

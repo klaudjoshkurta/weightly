@@ -3,7 +3,6 @@ package com.shkurta.weighttracker.ui.viewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shkurta.weighttracker.data.repository.SettingsRepository
-import com.shkurta.weighttracker.ui.AppLanguage
 import com.shkurta.weighttracker.ui.AppTheme
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
@@ -17,25 +16,12 @@ class SettingsViewModel @Inject constructor(
     private val repo: SettingsRepository
 ) : ViewModel() {
 
-    val language: StateFlow<AppLanguage> =
-        repo.languageFlow.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = AppLanguage.ENGLISH
-        )
-
     val theme: StateFlow<AppTheme> =
         repo.themeFlow.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = AppTheme.AUTO
         )
-
-    fun updateLanguage(lang: AppLanguage) {
-        viewModelScope.launch {
-            repo.setLanguage(lang)
-        }
-    }
 
     fun updateTheme(appTheme: AppTheme) {
         viewModelScope.launch {

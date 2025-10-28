@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Divider
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
@@ -31,7 +29,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.shkurta.weighttracker.R
-import com.shkurta.weighttracker.ui.AppLanguage
 import com.shkurta.weighttracker.ui.AppTheme
 import com.shkurta.weighttracker.ui.viewModel.SettingsViewModel
 
@@ -41,11 +38,9 @@ fun MenuScreen(
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     // 1. Collect current persisted values
-    val selectedLanguage by viewModel.language.collectAsState()
     val selectedTheme by viewModel.theme.collectAsState()
 
     // 2. Local dialog visibility
-    var showLanguageDialog by rememberSaveable { mutableStateOf(false) }
     var showThemeDialog by rememberSaveable { mutableStateOf(false) }
 
     Surface(
@@ -55,17 +50,6 @@ fun MenuScreen(
         Column(modifier = Modifier.padding(vertical = 24.dp)) {
 
             SettingsRow(
-                title = "Language",
-                value = selectedLanguage.label,
-                onClick = { showLanguageDialog = true }
-            )
-
-            HorizontalDivider(
-                modifier = Modifier.padding(start = 16.dp),
-                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
-            )
-
-            SettingsRow(
                 title = "Theme",
                 value = selectedTheme.label,
                 onClick = { showThemeDialog = true }
@@ -73,18 +57,6 @@ fun MenuScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
         }
-    }
-
-    // Dialogs
-    if (showLanguageDialog) {
-        LanguageDialog(
-            current = selectedLanguage,
-            onSelect = { newLang ->
-                viewModel.updateLanguage(newLang)
-                showLanguageDialog = false
-            },
-            onDismiss = { showLanguageDialog = false }
-        )
     }
 
     if (showThemeDialog) {
@@ -135,75 +107,6 @@ private fun SettingsRow(
             painter = painterResource(id = R.drawable.ic_back),
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
-        )
-    }
-}
-
-@Composable
-fun LanguageDialog(
-    current: AppLanguage,
-    onSelect: (AppLanguage) -> Unit,
-    onDismiss: () -> Unit
-) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        confirmButton = { },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text(
-                    text = "Cancel",
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
-        },
-        title = {
-            Text(
-                text = "Language",
-                style = MaterialTheme.typography.titleLarge
-            )
-        },
-        text = {
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                LanguageOptionRow(
-                    label = AppLanguage.ENGLISH.label,
-                    selected = current == AppLanguage.ENGLISH,
-                    onClick = { onSelect(AppLanguage.ENGLISH) }
-                )
-                LanguageOptionRow(
-                    label = AppLanguage.GREEK.label,
-                    selected = current == AppLanguage.GREEK,
-                    onClick = { onSelect(AppLanguage.GREEK) }
-                )
-            }
-        }
-    )
-}
-
-@Composable
-private fun LanguageOptionRow(
-    label: String,
-    selected: Boolean,
-    onClick: () -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick() },
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text(
-            modifier = Modifier
-                .padding(vertical = 12.dp)
-                .weight(1f),
-            text = label,
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurface
-        )
-
-        RadioButton(
-            selected = selected,
-            onClick = onClick
         )
     }
 }
