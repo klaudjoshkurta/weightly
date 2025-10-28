@@ -18,6 +18,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -27,29 +28,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.shkurta.weighttracker.R
-
-enum class AppLanguage(val label: String) {
-    ENGLISH("English"),
-    GREEK("Ελληνικά")
-}
-
-enum class AppTheme(val label: String) {
-    LIGHT("Light"),
-    DARK("Dark"),
-    AUTO("Auto")
-}
+import com.shkurta.weighttracker.ui.AppLanguage
+import com.shkurta.weighttracker.ui.AppTheme
+import com.shkurta.weighttracker.ui.viewModel.SettingsViewModel
 
 @Composable
 fun MenuScreen(
-    navController: NavHostController
+    navController: NavHostController,
+    viewModel: SettingsViewModel = hiltViewModel()
 ) {
-    // current selected values (in prod, read these from ViewModel / DataStore)
-    var selectedLanguage by rememberSaveable { mutableStateOf(AppLanguage.ENGLISH) }
-    var selectedTheme by rememberSaveable { mutableStateOf(AppTheme.AUTO) }
+    // 1. Collect current persisted values
+    val selectedLanguage by viewModel.language.collectAsState()
+    val selectedTheme by viewModel.theme.collectAsState()
 
-    // dialog visibility
+    // 2. Local dialog visibility
     var showLanguageDialog by rememberSaveable { mutableStateOf(false) }
     var showThemeDialog by rememberSaveable { mutableStateOf(false) }
 
@@ -59,7 +54,6 @@ fun MenuScreen(
     ) {
         Column(modifier = Modifier.padding(vertical = 24.dp)) {
 
-            // LANGUAGE ROW
             SettingsRow(
                 title = "Language",
                 value = selectedLanguage.label,
@@ -71,46 +65,41 @@ fun MenuScreen(
                 color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
             )
 
-            // THEME ROW
             SettingsRow(
                 title = "Theme",
                 value = selectedTheme.label,
                 onClick = { showThemeDialog = true }
             )
-        }
 
-        // LANGUAGE DIALOG
-        if (showLanguageDialog) {
-            LanguageDialog(
-                current = selectedLanguage,
-                onSelect = { newLang ->
-                    selectedLanguage = newLang
-                    showLanguageDialog = false
-                },
-                onDismiss = { showLanguageDialog = false }
-            )
+            Spacer(modifier = Modifier.height(32.dp))
         }
+    }
 
-        // THEME DIALOG
-        if (showThemeDialog) {
-            ThemeDialog(
-                current = selectedTheme,
-                onSelect = { newTheme ->
-                    selectedTheme = newTheme
-                    showThemeDialog = false
-                },
-                onDismiss = { showThemeDialog = false }
-            )
-        }
+    // Dialogs
+    if (showLanguageDialog) {
+        LanguageDialog(
+            current = selectedLanguage,
+            onSelect = { newLang ->
+                viewModel.updateLanguage(newLang)
+                showLanguageDialog = false
+            },
+            onDismiss = { showLanguageDialog = false }
+        )
+    }
+
+    if (showThemeDialog) {
+        ThemeDialog(
+            current = selectedTheme,
+            onSelect = { newTheme ->
+                viewModel.updateTheme(newTheme)
+                showThemeDialog = false
+            },
+            onDismiss = { showThemeDialog = false }
+        )
     }
 }
 
 
-/**
- * One row in the settings list.
- * Left side: title + current value
- * Right side: chevron icon
- */
 @Composable
 private fun SettingsRow(
     title: String,
@@ -142,7 +131,6 @@ private fun SettingsRow(
             )
         }
 
-        // trailing chevron (replace with your own icon in res/drawable)
         Icon(
             painter = painterResource(id = R.drawable.ic_back),
             contentDescription = null,
@@ -151,10 +139,6 @@ private fun SettingsRow(
     }
 }
 
-/**
- * Dialog to choose language.
- * Uses RadioButton list inside AlertDialog.
- */
 @Composable
 fun LanguageDialog(
     current: AppLanguage,
@@ -163,7 +147,7 @@ fun LanguageDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        confirmButton = { /* we select instantly on tap so no confirm button needed */ },
+        confirmButton = { },
         dismissButton = {
             TextButton(onClick = onDismiss) {
                 Text(
@@ -224,10 +208,6 @@ private fun LanguageOptionRow(
     }
 }
 
-/**
- * Dialog to choose theme mode.
- * Light / Dark / Auto.
- */
 @Composable
 fun ThemeDialog(
     current: AppTheme,

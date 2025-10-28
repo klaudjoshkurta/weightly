@@ -19,6 +19,10 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideAppContext(@ApplicationContext context: Context): Context = context
+
+    @Provides
+    @Singleton
     fun provideDatabase(@ApplicationContext context: Context): AppDatabase =
         Room.databaseBuilder(context, AppDatabase::class.java, "weight_db").build()
 
